@@ -1,40 +1,111 @@
 import React, { useState } from "react";
 import { inputFied } from "../componet/InputField";
-inputFied;
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Bounce, Slide, toast } from 'react-toastify';
+// import { Link, useNavigate } from "react-router-dom";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+} from "firebase/auth";
+import HashLoader from "react-spinners/HashLoader";
+import { Link } from "react-router";
+
 const SingUp = () => {
-  const [inputFild,setinputfild]=useState(
-    {
-      email:"",
-      fullName:"",
-      password:"",
+  const auth = getAuth();
+
+  const [inputFilds, setinputfild] = useState({
+    email: "",
+    fullName: "",
+    password: "",
+  });
+  const [inputFildErr, setinputfildErr] = useState({
+    emailErr: "",
+    fullNameErr: "",
+    passwordErr: "",
+  });
+  const [eye, setEye] = useState(false);
+  const [loding,setloding]=useState(false)
+  const handleINputChange = (event) => {
+    const { name, value } = event.target;
+    setinputfild({
+      ...inputFilds,
+      [name]: value,
+    });
+  };
+  const submitbton = (e) => {
+    e.preventDefault();
+    const { email, fullName, password } = inputFilds;
+    if (!email) {
+      setinputfildErr({ ...inputFildErr, emailErr: "your email is mising" });
+    } else if (!fullName) {
+      setinputfildErr({
+        ...inputFildErr,
+        fullNameErr: "your Full Name is mising",
+      });
+    } else if (!password) {
+      setinputfildErr({
+        ...inputFildErr,
+        passwordErr: "your password is mising",
+      });
+    } else {
+      setinputfildErr({
+        ...inputFildErr,
+        emailErr: "",
+        fullNameErr: "",
+        passwordErr: "",
+      });
+      setloding(true)
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userinfo) => {
+           updateProfile(auth.currentUser ,{
+            displayName: fullName||"imran",
+            photoURL: "https://example.com/jane-q-user/profile.jpg",
+          });
+          console.log("user information",userinfo);
+          
+        }) 
+        .then(() => {
+          toast.success(`🦄 ${fullName} your sing up succesfully!`, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Slide,
+            });
+            return sendEmailVerification(auth.currentUser);
+          })
+          .then((emailINfo) => {
+            // console.log(`jigrkf `, emailINfo);
+          })
+        .catch((err) => {
+          console.log(`error form ${err}`);
+        }).finally(()=>{
+          setloding(false)
+         setinputfild({
+          email:"",
+          fullName:"",
+          password:" "
+         })
+           navigator("/singIn")
+        });
     }
-  )
-  const [inputFildErr,setinputfildErr]=useState(
-    {
-      emailErr:"",
-      fullNameErr:"",
-      passwordErr:"",
-    }
-  )
-  const handleINputChange=(event)=>{
-    const {name, value}=event.target;
-   setinputfild(
-    {
-      ...inputFied,
-      [name]:value
-    }
-   )
-  }
-  const submitbton=()=>{
-    const {email, fullName, password}=inputFild
-   if(!email){
-    setinputfildErr({...inputFildErr, emailErr:"your email is mising"})
-   }else if(!fullName){
-    setinputfildErr({...inputFildErr, fullNameErr:"your Full Name is mising"})
-   }else if(!password){
-    setinputfildErr({...inputFildErr, fullNameErr:"your Full Name is mising"})
-   }
-  }
+  };
+  console.log("current user information",auth.currentUser);
+  
+  const viewer = () => {
+    setEye(!eye);
+  };
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
   return (
     <>
       <section>
@@ -61,12 +132,15 @@ const SingUp = () => {
                               ? "email"
                               : inputFied.name == "fullName"
                               ? "text"
+                              : eye
+                              ? "text"
                               : "password"
                           }
                           id={inputFied.id}
                           name={inputFied.name}
                           className="w-[450px] p-6 border-2 border-amber-500 rounded-2xl inputF"
-                          placeholder={inputFied.place} onChange={handleINputChange}
+                          placeholder={inputFied.place}
+                          onChange={handleINputChange}
                           required
                         />
 
@@ -76,16 +150,56 @@ const SingUp = () => {
                         >
                           {inputFied.place}
                         </label>
-                        {inputFildErr.emailErr ? <span className="text-red-300 block text-start pl-[100px] ">{inputFildErr.emailErr}</span>:inputFildErr.fullNameErr ? <span className="text-red-300 block text-start pl-[100px] ">{inputFildErr.fullNameErr}</span>:inputFildErr.passwordErr && <span className="text-red-300 block text-start pl-[100px] ">{inputFildErr.passwordErr}</span>}
+                        {inputFilds.email == "" &&
+                        inputFied.name === "email" ? (
+                          <span className="block pl-[100px] text-red-600 text-start">
+                            {inputFildErr.emailErr}
+                          </span>
+                        ) : inputFilds.fullName == "" &&
+                          inputFied.name === "fullName" ? (
+                          <span className="block pl-[100px] text-red-600 text-start">
+                            {inputFildErr.fullNameErr}
+                          </span>
+                        ) : inputFilds.password == "" &&
+                          inputFied.name === "password" ? (
+                          <span className="block pl-[100px] text-red-600 text-start">
+                            {inputFildErr.passwordErr}
+                          </span>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     );
                   })}
-                  <button onClick={submitbton} className="w-[450px] border-2 border-bandColor bg-bandColor rounded-4xl p-5 ml-5 text-2xl font-normal font-nunito text-white my-5">
-                    Sign up
-                  </button>
+                  <span
+                    onClick={viewer}
+                    className=" absolute right-[160px] bottom-[204px]"
+                  >
+                    {eye ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                  {
+                    loding?( <button
+                      className="w-[450px] border-2 border-bandColor bg-bandColor rounded-4xl p-5 ml-5 text-2xl font-normal font-nunito text-white my-5"
+                    >
+                     <HashLoader
+        color={"#fff"}
+        loading={true}
+        cssOverride={override}
+        size={50}
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
+                    </button>):( <button
+                    onClick={submitbton} 
+                    className="w-[450px] border-2 border-bandColor bg-bandColor rounded-4xl p-5 ml-5 text-2xl font-normal font-nunito text-white my-5"
+                  > Sign up
+                    
+                  </button>)
+                  }
+                 
                   <p className="text-center text-[13px] font-normal font-poppins text-fontColor">
                     Already have an account ?{" "}
-                    <span className="text-[#EA6C00] font-bold">Sign In</span>
+                    <Link to={'/singIn'} className="text-[#EA6C00] font-bold">Sign In</Link>
                   </p>
                 </form>
               </div>

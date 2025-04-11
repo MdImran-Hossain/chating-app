@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { inputFied } from "../componet/InputField";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Bounce, Slide, toast } from 'react-toastify';
+import { Slide, toast } from 'react-toastify';
 // import { Link, useNavigate } from "react-router-dom";
 import {
   getAuth,

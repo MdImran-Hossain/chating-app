@@ -5,12 +5,14 @@
 :root{
   --fontColor:#11175D;
   --bandColor:#5F35F5;
+  --blackColor:#000;
   --nunito:"Nunito", sans-serif;
   --poppins:"Poppins", sans-serif;
 }
 @theme {
   --color-fontColor:var(--fontColor);
   --color-bandColor:var(--bandColor);
+  --color-blackColor:var(--blackColor);
   --font-nunito:var(--nunito);
   --font-poppins:var(--poppins);
 }
@@ -32,4 +34,28 @@
 .inputF:focus::placeholder{
   opacity: 1;
   animation-delay: 0.2s;
+}
+.active{
+  background: white;
+  width: 130px;
+  height: 60px;
+  color: var(--fontColor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+   border-top-left-radius: 10px;
+   border-bottom-left-radius: 10px;
+   position: relative;
+   overflow: hidden;
+}
+.active::after{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 95%;
+  width: 100%;
+  height: 100%;
+  background: var(--bandColor);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }

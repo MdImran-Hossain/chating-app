@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { loginputFied } from "../componet/Loginginput";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Bounce, Slide, toast } from 'react-toastify';
-// import { Link, useNavigate } from "react-router-dom";
 import {
   getAuth,
   signInWithEmailAndPassword,signInWithPopup, GoogleAuthProvider
 } from "firebase/auth";
 import HashLoader from "react-spinners/HashLoader";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { getDatabase, push, ref, set } from "firebase/database";
 
 const SingIn = () => {
   const auth = getAuth();
+  const db=getDatabase()
+  const navigator= useNavigate()
 
   const [inputFilds, setinputfild] = useState({
     email: "",
@@ -60,8 +62,7 @@ const SingIn = () => {
                 theme: "dark",
                 transition: Slide,
                 });
-          console.log("user information",userinfo);
-          
+            navigator("/")
         }) 
           
         .catch((err) => {
@@ -90,8 +91,15 @@ const SingIn = () => {
   const googlehander=(e)=>{
     e.preventDefault();
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider).then((logingInfo)=>{
-
+    signInWithPopup(auth, provider).then((userInfo)=>{
+      const {user}=userInfo;
+      let databaseRef=push(ref(db, 'users/'));
+                set(databaseRef, {
+                  username: user.displayName|| "Missing name",
+                  email: user.email || "Missing Email",
+                  profile_picture :user.photoURL,
+                  userUid:user.uid
+                });
     }).catch((err)=>{
         console.log('hschjs',err);
         

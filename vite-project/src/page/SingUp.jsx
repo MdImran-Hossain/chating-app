@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { inputFied } from "../componet/InputField";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Slide, toast } from 'react-toastify';
-// import { Link, useNavigate } from "react-router-dom";
+import { getDatabase, push, ref, set } from "firebase/database";
+
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -10,11 +11,13 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import HashLoader from "react-spinners/HashLoader";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+
 
 const SingUp = () => {
   const auth = getAuth();
-
+  const db = getDatabase();
+  const navigator= useNavigate()
   const [inputFilds, setinputfild] = useState({
     email: "",
     fullName: "",
@@ -27,6 +30,8 @@ const SingUp = () => {
   });
   const [eye, setEye] = useState(false);
   const [loding,setloding]=useState(false)
+
+  // ------- onchange function
   const handleINputChange = (event) => {
     const { name, value } = event.target;
     setinputfild({
@@ -34,6 +39,7 @@ const SingUp = () => {
       [name]: value,
     });
   };
+  // ------------ onclick function submitbtn
   const submitbton = (e) => {
     e.preventDefault();
     const { email, fullName, password } = inputFilds;
@@ -63,25 +69,32 @@ const SingUp = () => {
             displayName: fullName||"imran",
             photoURL: "https://example.com/jane-q-user/profile.jpg",
           });
-          console.log("user information",userinfo);
+          // console.log("user information",userinfo);
           
         }) 
         .then(() => {
-          toast.success(`🦄 ${fullName} your sing up succesfully!`, {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-            transition: Slide,
-            });
+          let databaseRef=push(ref(db, 'users/'));
+          set(databaseRef, {
+            username: auth.currentUser.displayName|| fullName,
+            email: auth.currentUser.email || email,
+            profile_picture :"https://images.pexels.com/photos/28815479/pexels-photo-28815479/free-photo-of-hummingbird-sipping-nectar-from-fuchsia-flowers.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            userUid:auth.currentUser.uid
+          });
             return sendEmailVerification(auth.currentUser);
           })
-          .then((emailINfo) => {
-            // console.log(`jigrkf `, emailINfo);
+          .then(() => {
+            toast.success(`🦄 ${fullName} your sing up succesfully!`, {
+              position: "top-right",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              transition: Slide,
+              });
+                navigator("/singIn")
           })
         .catch((err) => {
           console.log(`error form ${err}`);
@@ -92,7 +105,7 @@ const SingUp = () => {
           fullName:"",
           password:" "
          })
-           navigator("/singIn")
+         
         });
     }
   };

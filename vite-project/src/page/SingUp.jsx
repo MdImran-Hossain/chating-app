@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { inputFied } from "../componet/InputField";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Slide, toast } from 'react-toastify';
+import { Slide, toast } from "react-toastify";
 import { getDatabase, push, ref, set } from "firebase/database";
 
 import {
@@ -13,11 +13,10 @@ import {
 import HashLoader from "react-spinners/HashLoader";
 import { Link, useNavigate } from "react-router";
 
-
 const SingUp = () => {
   const auth = getAuth();
   const db = getDatabase();
-  const navigator= useNavigate()
+  const navigator = useNavigate();
   const [inputFilds, setinputfild] = useState({
     email: "",
     fullName: "",
@@ -29,7 +28,7 @@ const SingUp = () => {
     passwordErr: "",
   });
   const [eye, setEye] = useState(false);
-  const [loding,setloding]=useState(false)
+  const [loding, setloding] = useState(false);
 
   // ------- onchange function
   const handleINputChange = (event) => {
@@ -62,55 +61,55 @@ const SingUp = () => {
         fullNameErr: "",
         passwordErr: "",
       });
-      setloding(true)
+      setloding(true);
       createUserWithEmailAndPassword(auth, email, password)
         .then((userinfo) => {
-           updateProfile(auth.currentUser ,{
-            displayName: fullName||"imran",
+          updateProfile(auth.currentUser, {
+            displayName: fullName || "imran",
             photoURL: "https://example.com/jane-q-user/profile.jpg",
           });
           // console.log("user information",userinfo);
-          
-        }) 
+        })
         .then(() => {
-          let databaseRef=push(ref(db, 'users/'));
+          let databaseRef = push(ref(db, "users/"));
           set(databaseRef, {
-            username: auth.currentUser.displayName|| fullName,
+            username: auth.currentUser.displayName || fullName,
             email: auth.currentUser.email || email,
-            profile_picture :"https://images.pexels.com/photos/28815479/pexels-photo-28815479/free-photo-of-hummingbird-sipping-nectar-from-fuchsia-flowers.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            userUid:auth.currentUser.uid
+            profile_picture:
+              "https://images.pexels.com/photos/28815479/pexels-photo-28815479/free-photo-of-hummingbird-sipping-nectar-from-fuchsia-flowers.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+            userUid: auth.currentUser.uid,
           });
-            return sendEmailVerification(auth.currentUser);
-          })
-          .then(() => {
-            toast.success(`🦄 ${fullName} your sing up succesfully!`, {
-              position: "top-right",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark",
-              transition: Slide,
-              });
-                navigator("/singIn")
-          })
+          return sendEmailVerification(auth.currentUser);
+        })
+        .then(() => {
+          toast.success(`🦄 ${fullName} your sing up succesfully!`, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Slide,
+          });
+          navigator("/singIn");
+        })
         .catch((err) => {
           console.log(`error form ${err}`);
-        }).finally(()=>{
-          setloding(false)
-         setinputfild({
-          email:"",
-          fullName:"",
-          password:" "
-         })
-         
+        })
+        .finally(() => {
+          setloding(false);
+          setinputfild({
+            email: "",
+            fullName: "",
+            password: " ",
+          });
         });
     }
   };
-  console.log("current user information",auth.currentUser);
-  
+  console.log("current user information", auth.currentUser);
+
   const viewer = () => {
     setEye(!eye);
   };
@@ -190,29 +189,32 @@ const SingUp = () => {
                   >
                     {eye ? <FaEyeSlash /> : <FaEye />}
                   </span>
-                  {
-                    loding?( <button
+                  {loding ? (
+                    <button className="w-[450px] border-2 border-bandColor bg-bandColor rounded-4xl p-5 ml-5 text-2xl font-normal font-nunito text-white my-5">
+                      <HashLoader
+                        color={"#fff"}
+                        loading={true}
+                        cssOverride={override}
+                        size={50}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={submitbton}
                       className="w-[450px] border-2 border-bandColor bg-bandColor rounded-4xl p-5 ml-5 text-2xl font-normal font-nunito text-white my-5"
                     >
-                     <HashLoader
-        color={"#fff"}
-        loading={true}
-        cssOverride={override}
-        size={50}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />
-                    </button>):( <button
-                    onClick={submitbton} 
-                    className="w-[450px] border-2 border-bandColor bg-bandColor rounded-4xl p-5 ml-5 text-2xl font-normal font-nunito text-white my-5"
-                  > Sign up
-                    
-                  </button>)
-                  }
-                 
+                      {" "}
+                      Sign up
+                    </button>
+                  )}
+
                   <p className="text-center text-[13px] font-normal font-poppins text-fontColor">
                     Already have an account ?{" "}
-                    <Link to={'/singIn'} className="text-[#EA6C00] font-bold">Sign In</Link>
+                    <Link to={"/singIn"} className="text-[#EA6C00] font-bold">
+                      Sign In
+                    </Link>
                   </p>
                 </form>
               </div>

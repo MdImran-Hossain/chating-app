@@ -1,14 +1,19 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Profile from '../../assets/i.png'
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import { LuMessageCircleMore } from 'react-icons/lu';
 import { IoMdCloudUpload, IoMdNotificationsOutline } from 'react-icons/io';
 import { GrLogout } from 'react-icons/gr';
 import { Link, useLocation, useNavigate } from 'react-router';
+import { getDatabase, ref, onValue ,update  } from "firebase/database";
+import { getAuth } from 'firebase/auth';
 
 const Navbar = () => {
-  const navigate= useNavigate();
-  const location= useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const db = getDatabase();
+  const auth = getAuth();
+  const [userdata, setuserdata] = useState({});
     const NavItem=[
         {
             id:1,
@@ -72,6 +77,24 @@ const Navbar = () => {
  },[])
  console.log(window.cloudinary);
  
+ useEffect(() => {
+  const fetchData = () => {
+    const UserRef = ref(db, "users/");
+    onValue(UserRef, (snapshot) => {
+      let userblankinfo = null;
+      snapshot.forEach((item) => {
+        if (item.val().userUid === auth.currentUser.uid) {
+          userblankinfo = { ...item.val(), userKey: item.key };
+        }
+      });
+      setuserdata(userblankinfo);
+      console.log(userblankinfo);
+    });
+  };
+  
+  fetchData();
+}, []);
+
 
   return (
     <>
@@ -79,9 +102,15 @@ const Navbar = () => {
             <div className='w-[200px] h-[922px] m-6 rounded-2xl bg-bandColor px-[20px] py-[40px] flex justify-center items-center flex-col'>
                 <div className='w-[100px] h-[100px] relative group rounded-full'>
                     <picture>
-                        <img src={Profile} alt={Profile}  className='w-full h-full profli object-fill rounded-full'/>
+                        <img src={ userdata
+                    ? userdata.profile_picture
+                     :Profile} alt={Profile}  className='w-full h-full profli object-fill rounded-full'/>
                     </picture>
                     <span onClick={handleUpload} className='text-2xl text-white absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] transition-all invisible group-hover:visible'><IoMdCloudUpload /></span>
+
+                    <div>
+                      <h2 className='text-[14px] text-white w-[144px] font-bold'>{userdata?userdata.username:'name is missing'}</h2>
+                    </div>
                 </div>
                 <div className='flex flex-col gap-[80px] items-center mt-12'>
                   {

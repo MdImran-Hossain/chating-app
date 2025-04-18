@@ -100,6 +100,7 @@ const SingIn = () => {
                   profile_picture :user.photoURL,
                   userUid:user.uid
                 });
+                navigator("/")
     }).catch((err)=>{
         console.log('hschjs',err);
         

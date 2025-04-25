@@ -2,7 +2,9 @@ import React from "react";
 import { IoSearch } from "react-icons/io5";
 import { HiDotsVertical } from "react-icons/hi";
 import Group from "../../componet/Group";
-import { BlockedUsers, FriendRequest, Friends, GroupList, UserList } from "../../componet/InputField";
+import { BlockedUsers, Friends, GroupList } from "../../componet/InputField";
+import UserList from "../../componet/UserList";
+import FriendRequest from "../../componet/FriendRequest";
 
 const Home = () => {
   return (
@@ -82,64 +84,11 @@ const Home = () => {
                 })}
               </div>
             </div>
-            <div className="w-[427px] shadow-2xl rounded-2xl py-[20px] px-[15px]">
-              <div className="flex justify-between items-center ">
-                <h3 className="text-[20px] font-semibold font-poppins text-[#000]">
-                User List
-                </h3>
-                <span className="text-bandColor text-2xl">
-                  <HiDotsVertical />
-                </span>
-              </div>
-              <div>
-                {UserList.map((content, index) => {
-                  return (
-                    <Group
-                      key={content.id}
-                      GroupBorder={
-                        index === UserList.length - 1
-                          ? "border-none"
-                          : "border-b-2"
-                      }
-                      GroupHead={content.grouphead}
-                      GroupText={content.grouptext}
-                      GroupBtn={content.Btn}
-                      
-                      GroupBtnDesing={"text-white"}
-                      User={'pr-[170px]'}
-                    />
-                  );
-                })}
-              </div>
+            <div>
+              <UserList />
             </div>
-            <div className="w-[427px] shadow-2xl rounded-2xl py-[20px] px-[15px]">
-              <div className="flex justify-between items-center ">
-                <h3 className="text-[20px] font-semibold font-poppins text-[#000]">
-                Friend  Request
-                </h3>
-                <span className="text-bandColor text-2xl">
-                  <HiDotsVertical />
-                </span>
-              </div>
-              <div>
-                {FriendRequest.map((content, index) => {
-                  return (
-                    <Group
-                      key={content.id}
-                      GroupBorder={
-                        index === FriendRequest.length - 1
-                          ? "border-none"
-                          : "border-b-2"
-                      }
-                      GroupHead={content.grouphead}
-                      GroupText={content.grouptext}
-                      GroupBtn={content.Btn}
-                      GroupBtnDesing={"text-white"}
-                      User={'pr-[120px]'}
-                    />
-                  );
-                })}
-              </div>
+            <div>
+              <FriendRequest />
             </div>
             <div className="w-[427px] shadow-2xl rounded-2xl py-[20px] px-[15px]">
               <div className="flex justify-between items-center ">

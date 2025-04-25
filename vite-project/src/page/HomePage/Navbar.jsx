@@ -47,23 +47,33 @@ const Navbar = () => {
   //  todo: handleUpload function
 
   const handleUpload=()=>{
-    cloudinary.openUploadWidget({
-      cloudName: "dgqtlndtb",
-      uploadPreset: "cheatapp",
-      sources: [ 'local', 'url', 'image_search','google_drive', 'unsplash', 'dropbox', 'camera'],
-      googleApiKey: 'AIzaSyCLqnYeTL3nNOqzZ_mpyfQEroe8AxpKCGI',
-      searchBySites: ["all", "cloudinary.com"],
-      searchByRights: true 
-    },
-    (error, result)=>{
-      if(error){
-        throw new Error("img upload failed")
-      }else if(result.event==='success'){
-        console.log("hello",result.info.secure_url);
+  
+    cloudinary.openUploadWidget(
+      {
+        cloudName: "dgqtlndtb",
+        uploadPreset: "cheatapp",
+        sources: [
+          "local",
+          "url",
+          "camera",
+          "image_search",
+          "unsplash",
+          "google_drive",
+        ],
+
+        googleApiKey: "AIzaSyCLqnYeTL3nNOqzZ_mpyfQEroe8AxpKCGI",
+        searchBySites: ["all", "cloudinary.com"],
+        searchByRights: true,
+      },
+      (error, result) => {
+        if (error) {
+          throw new Error("Failed to upload profile picture");
+        }
+        update(ref(db , `users/${userdata.userKey}`), {
+          profile_picture: result?.info?.secure_url
+        });
       }
-     
-      
-    })
+    );
   }
 
 
@@ -75,7 +85,7 @@ const Navbar = () => {
   script.async=true
   document.body.appendChild(script)
  },[])
- console.log(window.cloudinary);
+ 
  
  useEffect(() => {
   const fetchData = () => {
@@ -88,12 +98,12 @@ const Navbar = () => {
         }
       });
       setuserdata(userblankinfo);
-      console.log(userblankinfo);
     });
   };
-  
   fetchData();
 }, []);
+// console.log(userdata);
+// console.log("Profile Picture URL:", userdata?.profile_picture);
 
 
   return (
@@ -102,9 +112,16 @@ const Navbar = () => {
             <div className='w-[200px] h-[922px] m-6 rounded-2xl bg-bandColor px-[20px] py-[40px] flex justify-center items-center flex-col'>
                 <div className='w-[100px] h-[100px] relative group rounded-full'>
                     <picture>
-                        <img src={ userdata
+                    <img
+                src={
+                  userdata
                     ? userdata.profile_picture
-                     :Profile} alt={Profile}  className='w-full h-full profli object-fill rounded-full'/>
+                    : Profile
+                }
+                alt="profilepicture"
+                className=" w-full h-full object-cover rounded-full"
+              />
+
                     </picture>
                     <span onClick={handleUpload} className='text-2xl text-white absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] transition-all invisible group-hover:visible'><IoMdCloudUpload /></span>
 

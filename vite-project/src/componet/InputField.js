@@ -1,3 +1,6 @@
+import moment from "moment";
+import { toast, Bounce } from "react-toastify";
+
 export const inputFied=[
     {
         id:1,
@@ -15,7 +18,22 @@ export const inputFied=[
         place:"Password"
     }
 ]
-
+export const SucessToast = (msg = "sucess msg missing" , positon = "top-right") => {
+    toast.success(msg, {
+      position: positon,
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
+  };
+export const timeSet=()=> {
+    return moment().format("MM DD YYYY, h:mm:ss a")
+  }
 export const GroupList=[
 {
     id:1,
@@ -62,7 +80,7 @@ export const Friends=[
         Btn:"Today, 8:56pm"
     },
     ]
-    export const UserList=[
+    export const UserLists=[
         {
             id:1,
             grouphead: "Raghav",
@@ -88,32 +106,7 @@ export const Friends=[
             Btn:"+"
         },
         ]
-        export const FriendRequest=[
-            {
-                id:1,
-                grouphead: "Raghav",
-                grouptext:"Dinner?",
-                Btn:"Accept"
-            },
-            {
-                id:2,
-                grouphead: "Raghav",
-                grouptext:"Dinner?",
-                Btn:"Accept"
-            },
-            {
-                id:3,
-                grouphead: "Raghav",
-                grouptext:"Dinner?",
-                Btn:"Accept"
-            },
-            {
-                id:4,
-                grouphead: "Raghav",
-                grouptext:"Dinner?",
-                Btn:"Accept"
-            },
-            ]
+      
             export const BlockedUsers=[
                 {
                     id:1,

@@ -54,32 +54,7 @@ export const GroupList=[
     Btn:"Join"
 },
 ]
-export const Friends=[
-    {
-        id:1,
-        grouphead: "Raghav",
-        grouptext:"Dinner?",
-        Btn:"Today, 8:56pm"
-    },
-    {
-        id:2,
-        grouphead: "Raghav",
-        grouptext:"Dinner?",
-        Btn:"Today, 8:56pm"
-    },
-    {
-        id:3,
-        grouphead: "Raghav",
-        grouptext:"Dinner?",
-        Btn:"Today, 8:56pm"
-    },
-    {
-        id:4,
-        grouphead: "Raghav",
-        grouptext:"Dinner?",
-        Btn:"Today, 8:56pm"
-    },
-    ]
+
     export const UserLists=[
         {
             id:1,

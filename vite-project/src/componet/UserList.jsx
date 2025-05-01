@@ -6,7 +6,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { getDatabase, ref, onValue, push, off, set } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import UserSkeleton from "../Skeleton/UserSkeleton";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import { FaMinus, FaPlus, FaUser } from "react-icons/fa";
 import moment from "moment";
 
 const UserList = () => {
@@ -18,7 +18,37 @@ const UserList = () => {
   const [userList, setuserList] = useState([]);
   const [FRrequestList, setFRrequestList] = useState([]);
   const [loading, setloading] = useState(false);
+  const [AllFriend,setAllFriend]=useState ()
 // -------------- data fatch for user id
+  /**
+   * todo: fatch data from friends database
+   * @peram
+   * return voit
+   */
+  useEffect(() => {
+    const fetchfriendRequest = () => {
+      const UserRef = ref(db, "Friends/");
+      onValue(UserRef, (snapshot) => {
+        const userFRList = [];
+        snapshot.forEach((item) => {
+          if (auth?.currentUser?.uid == item.val().senderUid)
+            userFRList.push(item.val().senderUid.concat(item.val().receiverUid));
+        });
+        setAllFriend(userFRList);
+
+        console.log(userFRList);
+        
+      });
+    };
+    fetchfriendRequest();
+    // clean up funtion
+    return () => {
+      const UserRef = ref(db, "Friends/");
+      off(UserRef);
+    };
+  }, []);
+
+
 
   useEffect(() => {
     const fetchData = () => {
@@ -55,22 +85,28 @@ useEffect(()=>{
     onValue(UserRef, (snapshot) => {
       let FRrequstblankList = [];
       snapshot.forEach((item) => {
-        if(auth.currentUser.uid||Loggeduser.userUid==item.val().receiverUid){
+        if(auth.currentUser.uid === item.val().senderId ||
+        Loggeduser.userUid === item.val().senderId){
           FRrequstblankList.push(
-            auth?.currentUser?.uid?.concat(item.val().reciverUid)
+            auth?.currentUser?.uid?.concat(item.val().receiverUid)
           );
+        }else {
+          console.log("error from fatch Friend Request Data");
         }
         
       });
       setFRrequestList(FRrequstblankList);
+      
+      
     });
   }
   fetchFriendRequst()
   return () => {
-    const UserRef = ref(db, "users/");
+    const UserRef = ref(db, "friendRequest/");
     off(UserRef);
   };
 },[])
+// console.log(FRrequestList);
 
   // ---------loading 
   if (loading) {
@@ -122,7 +158,7 @@ useEffect(()=>{
   // const SenderReciverId=JSON.parse(localStorage.getItem("SenderReciverId"))
   // const generateFriendId = (uid1, uid2) => [uid1, uid2].sort().join("");
 
-  
+
   
   return (
     <>
@@ -165,19 +201,34 @@ useEffect(()=>{
                </div>
                {
                 FRrequestList.includes(
-                  auth?.currentUser?.uid?.concat(item.receiverUid)
-                )?( <button
-                  
-                    className={`px-[20px] py-1.5 text-[20px] font-semibold cursor-pointer font-poppins bg-bandColor rounded-xl `}
-                  >
-                    <FaMinus />
-                  </button>):( <button
+                  auth.currentUser.uid.concat(item.userUid)
+                )?(<button
+                  className={`px-[20px] py-1.5 text-[20px] font-semibold cursor-pointer font-poppins bg-bandColor rounded-xl `}
+                >
+                  <FaMinus />
+                </button>): AllFriend?.includes(
+                  auth.currentUser.uid.concat(item.userUid)
+                ) ? (
+                <button
+                  type="button"
+                  class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 cursor-pointer "
+                >
+                  <FaUser />
+                </button>
+              ):(<button
                 onClick={() => handleFriendRequest(item)}
                   className={`px-[20px] py-1.5 text-[20px] font-semibold cursor-pointer font-poppins bg-bandColor rounded-xl `}
                 >
                   <FaPlus />
                 </button>)
                }
+               {/* <button
+                onClick={() => handleFriendRequest(item)}
+                  className={`px-[20px] py-1.5 text-[20px] font-semibold cursor-pointer font-poppins bg-bandColor rounded-xl `}
+                >
+                  <FaPlus />
+                </button> */}
+               
               
               </div>
             );

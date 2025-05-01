@@ -2,9 +2,10 @@ import React from "react";
 import { IoSearch } from "react-icons/io5";
 import { HiDotsVertical } from "react-icons/hi";
 import Group from "../../componet/Group";
-import { BlockedUsers, Friends, GroupList } from "../../componet/InputField";
+import { BlockedUsers, GroupList } from "../../componet/InputField";
 import UserList from "../../componet/UserList";
 import FriendRequest from "../../componet/FriendRequest";
+import Friend from "../../componet/Friend";
 
 const Home = () => {
   return (
@@ -56,34 +57,9 @@ const Home = () => {
           </div>
         </div>
         
-        <div className="w-[427px] shadow-2xl rounded-2xl py-[20px] px-[15px]">
-              <div className="flex justify-between items-center ">
-                <h3 className="text-[20px] font-semibold font-poppins text-[#000]">
-                Friends
-                </h3>
-                <span className="text-bandColor text-2xl ">
-                  <HiDotsVertical />
-                </span>
-              </div>
-              <div>
-                {Friends.map((content, index) => {
-                  return (
-                    <Group
-                      key={content.id}
-                      GroupBorder={
-                        index === Friends.length - 1
-                          ? "border-none"
-                          : "border-b-2"
-                      }
-                      GroupHead={content.grouphead}
-                      GroupText={content.grouptext}
-                      GroupBtn={content.Btn}
-                      GroupBtnDesing={"bg-transparent text-[#00000080]"}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+        <div>
+          <Friend />
+        </div>
             <div>
               <UserList />
             </div>
@@ -100,12 +76,12 @@ const Home = () => {
                 </span>
               </div>
               <div>
-                {Friends.map((content, index) => {
+                {GroupList.map((content, index) => {
                   return (
                     <Group
                       key={content.id}
                       GroupBorder={
-                        index === Friends.length - 1
+                        index === GroupList.length - 1
                           ? "border-none"
                           : "border-b-2"
                       }

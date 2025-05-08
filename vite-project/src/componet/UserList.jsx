@@ -18,8 +18,14 @@ const UserList = () => {
   const [userList, setuserList] = useState([]);
   const [FRrequestList, setFRrequestList] = useState([]);
   const [loading, setloading] = useState(false);
-  const [AllFriend,setAllFriend]=useState ()
+  const [AllFriend,setAllFriend]=useState ();
 // -------------- data fatch for user id
+
+     
+
+
+
+
   /**
    * todo: fatch data from friends database
    * @peram
@@ -48,6 +54,7 @@ const UserList = () => {
     };
   }, []);
 
+console.log('hjkj',AllFriend);
 
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getDatabase, ref, onValue, push, off, set } from "firebase/database";
+import { getDatabase, ref, onValue, push, off, set, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import UserSkeleton from "../Skeleton/UserSkeleton";
 import { HiDotsVertical } from 'react-icons/hi';
@@ -39,6 +39,33 @@ const auth = getAuth();
         };
     
       }, []);
+
+// handleBlock funtion implement
+const handleBlock = (frd) => {
+  
+  console.log("block user key", frd.FRKey);
+  const check = confirm("are you Sure");
+
+  if (!check) {
+    return;
+  }
+
+  set(push(ref(db, "block/")), {
+    ...frd,
+    createdAt: timeSet()
+  })
+    .then(() => {
+      const frdRef = ref(db, `Friends/${frd.FRKey}`);
+      remove(frdRef);
+      
+    })
+    .catch((err) => {
+      console.error("error from handleBlock funtion", err);
+    });
+};
+//  console.log(friend);
+ 
+
   return (
     <>
       <div className="w-[427px] shadow-2xl rounded-2xl py-[20px] px-[15px]">
@@ -77,10 +104,10 @@ const auth = getAuth();
                             </div>
                            </div>
                           <button
-                            // onClick={() => handleFriendRequest(item)}
+                            onClick={() => handleBlock(item)}
                               className={`px-[20px] py-1.5 text-[20px] font-semibold cursor-pointer font-poppins bg-bandColor rounded-xl `}
                             >
-                              Accept
+                              Block
                             </button>
                           
                           </div>

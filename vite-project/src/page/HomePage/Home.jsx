@@ -6,6 +6,7 @@ import { BlockedUsers, GroupList } from "../../componet/InputField";
 import UserList from "../../componet/UserList";
 import FriendRequest from "../../componet/FriendRequest";
 import Friend from "../../componet/Friend";
+import BlockList from "../../componet/BlockList";
 
 const Home = () => {
   return (
@@ -94,35 +95,11 @@ const Home = () => {
                 })}
               </div>
             </div>
-            <div className="w-[427px] shadow-2xl rounded-2xl py-[20px] px-[15px]">
-              <div className="flex justify-between items-center ">
-                <h3 className="text-[20px] font-semibold font-poppins text-[#000]">
-                Blocked Users
-                </h3>
-                <span className="text-bandColor text-2xl">
-                  <HiDotsVertical />
-                </span>
-              </div>
-              <div>
-                {BlockedUsers.map((content, index) => {
-                  return (
-                    <Group
-                      key={content.id}
-                      GroupBorder={
-                        index === BlockedUsers.length - 1
-                          ? "border-none"
-                          : "border-b-2"
-                      }
-                      GroupHead={content.grouphead}
-                      GroupText={content.grouptext}
-                      GroupBtn={content.Btn}
-                      GroupBtnDesing={"text-white"}
-                      User={"pr-[120px]"}
-                    />
-                  );
-                })}
-              </div>
-            </div>
+                <div>
+                  {
+                    <BlockList />
+                  }
+                </div>
       </div>
     </>
   );
